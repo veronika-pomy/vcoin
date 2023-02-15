@@ -1,0 +1,14 @@
+{
+  "name": "vcoin",
+  "version": "1.0.0",
+  "description": "this is blockchain code",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "veronika-pomy",
+  "license": "ISC",
+  "dependencies": {
+    "crypto-js": "^4.1.1"
+  }
+}
