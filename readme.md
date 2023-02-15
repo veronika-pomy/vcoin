@@ -1,1 +1,1 @@
-# Learing blockchain technology
+# Learning blockchain technology
