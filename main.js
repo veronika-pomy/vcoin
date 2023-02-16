@@ -14,17 +14,35 @@ class Block {
         this.data = data;
         this.previousHash = previousHash;
         this.hash = this.calculateHash(); // hash of this block
+        this.nonce = 0; // rnadom number that can be changed to stop the while loop
     }
 
     // method that calculates hash of this block
     calculateHash ( ) {
-        return sha256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data)).toString(); // library returns obj, need to convert to string 
+        return sha256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data + this.nonce)).toString(); // library returns obj, need to convert to string 
     };
+
+    // method increases difficulty 
+    // bit coin asks that hash of a block begins with a certain amount of zeros, this increases computational power needed to make a block becauase a computer needs to go trhough a certain number of combinations to get a desired hash
+    // accouts for speed with which computers can make computattions
+    // difficulty sets how many characters of a string the method takes into account - more characters, greater difficulty 
+    // hash needs to begin with all zeros in this case
+    mineBlock (difficutly) {
+        while(this.hash.substring(0,difficutly) !== Array(difficutly +1).join('0')) {
+            this.nonce++;
+            this.hash = this.calculateHash();
+        }
+
+        console.log(`Block mained ${this.hash}`);
+    }
+
+
 }
 
 class Blockchain {
     constructor () {
         this.chain = [this.createGenesisBlock()];
+        this.difficutly = 4;
 
     }
 
@@ -41,7 +59,7 @@ class Blockchain {
     // method to create new block
     addNewBlock (newBlock) {
         newBlock.previousHash = this.getLatestBlock().hash; // set the previous hash to the hash of prev block
-        newBlock.hash = newBlock.calculateHash(); // this block's hash
+        newBlock.mineBlock(this.difficutly); // get a hash for the block with passed difficulty parameter
         this.chain.push(newBlock); // adds it to the chain
     }
 
@@ -69,20 +87,24 @@ class Blockchain {
 }
 
 let vcoin = new Blockchain;
+
+console.log('Mining block 1... ⛏️');
 vcoin.addNewBlock(new Block(1, "02/14/2023", { amount: 7 }));
+
+console.log('Mining block 2... ⛏️');
 vcoin.addNewBlock(new Block(2, "02/15/2023", { amount: 11 }));
 
-// blockchain
-console.log(JSON.stringify(vcoin, null, 4));
+// // blockchain
+// console.log(JSON.stringify(vcoin, null, 4));
 
-// check validity
-console.log(`Is vcoin blockchain valid? ${vcoin.isChainValid()}`);
+// // check validity
+// console.log(`Is vcoin blockchain valid? ${vcoin.isChainValid()}`);
 
-// tempering with blockchain 
-vcoin.chain[1].data = { amount: 1000 };
-vcoin.chain[1].hash = vcoin.chain[1].calculateHash();
+// // tempering with blockchain 
+// vcoin.chain[1].data = { amount: 1000 };
+// vcoin.chain[1].hash = vcoin.chain[1].calculateHash();
 
-// log tempered chain and check validity again
-console.log(JSON.stringify(vcoin, null, 4));
-console.log(`Is vcoin blockchain valid? ${vcoin.isChainValid()}`);
+// // log tempered chain and check validity again
+// console.log(JSON.stringify(vcoin, null, 4));
+// console.log(`Is vcoin blockchain valid? ${vcoin.isChainValid()}`);
 
